@@ -13,3 +13,39 @@ abstract class BaseParser<T> {
         return obj!!
     }
 }
+
+abstract class BaseParserVoid {
+    abstract fun parse(t: SQLTokenizer): Boolean
+
+    fun parseExpected(t: SQLTokenizer)
+    {
+        if (!parse(t))
+        {
+            // TODO: throw expectation failure
+        }
+    }
+}
+
+class KeywordParser(val kw: String) : BaseParserVoid()
+{
+    override fun parse(t: SQLTokenizer): Boolean
+    {
+        val pos = t.getPosition()
+        if (t.hasMoreTokens() && t.nextToken() == kw)
+            return true
+        t.restorePosition(pos)
+        return false
+    }
+}
+
+class SymParser(val sym: Char) : BaseParserVoid()
+{
+    override fun parse(t: SQLTokenizer): Boolean
+    {
+        val pos = t.getPosition()
+        if (t.hasMoreTokens() && t.nextToken() == sym.toString())
+            return true
+        t.restorePosition(pos)
+        return false
+    }
+}

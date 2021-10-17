@@ -6,7 +6,10 @@ import kotlinx.serialization.Serializable
 
     fun parse(str: String)
     {
+
         var t = SQLTokenizer(str)
         stmt = SelectStmtParser().parseExpected(t) as SelectStmt
+        // TODO: проверить что все токены исчерпаны
+        // TODO: проверить наличие точки с запятой
     }
 };

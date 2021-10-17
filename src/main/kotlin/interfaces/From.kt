@@ -3,33 +3,17 @@ package interfaces
 import BaseParser
 import kotlinx.serialization.Serializable
 import SQLTokenizer
-
-// TODO: вынести
-@Serializable sealed class ITableOrSubquery {}
-
-@Serializable data class Subquery(val stmt: ISelectStmt, val alias: String? = null) : ITableOrSubquery()
-
-@Serializable data class TableName(val tableName: String, val alias: String?=null) : ITableOrSubquery()
-/////////////////////////////////////////////
-
-// TODO: вынести
-@Serializable enum class JoinOperator
-{
-    INNER, LEFT, RIGHT, FULL
-}
-
-
-////////////////////////////////////////////////
+import SymParser
 
 @Serializable sealed class IFrom {
 }
 
-@Serializable class FromJoinClause(val tableOrSubquery: ITableOrSubquery
-                                 , val joinOp: JoinOperator
-                                 , val joinTableOrSubquery: ITableOrSubquery
-                                 , val joinConstraint: IExpression) : IFrom()
+@Serializable class FromJoinClause(var tableOrSubquery: ITableOrSubquery
+                                 , var joinOp: JoinOperator
+                                 , var joinTableOrSubquery: ITableOrSubquery
+                                 , var joinConstraint: IExpression) : IFrom()
 
-@Serializable data class FromTableOrSubqueryList(val tableOrSubqueryList: List<ITableOrSubquery>) : IFrom()
+@Serializable data class FromTableOrSubqueryList(val tableOrSubqueryList: MutableList<ITableOrSubquery> = mutableListOf()) : IFrom()
 
 class FromParser : BaseParser<IFrom>()
 {
@@ -39,15 +23,15 @@ class FromParser : BaseParser<IFrom>()
         {
             val pos = t.getPosition()
 
-            // Здесь порядок принципиален. Сначала всегда пробуем FromTableOrSubqueryList
-            val tosl = parseFromTableOrSubqueryList(t)
-            if (tosl != null)
-                return tosl
-            t.restorePosition(pos)
-
+            // TODO: определись с порядком парсинга. Здесь он видимо принципиален
             val jc = parseFromJoinClause(t)
             if (jc != null)
                 return jc
+            t.restorePosition(pos)
+
+            val tosl = parseFromTableOrSubqueryList(t)
+            if (tosl != null)
+                return tosl
             t.restorePosition(pos)
         }
         return null
@@ -55,17 +39,36 @@ class FromParser : BaseParser<IFrom>()
 
     private fun parseFromTableOrSubqueryList(t: SQLTokenizer) : IFrom?
     {
-        val tok = t.nextToken()
-        // TODO: проверить токен
-        // TODO: реализовать парсинг списка из нескольких значений
-        // TODO: в этом списке может быть не только TableName
-        return FromTableOrSubqueryList(listOf(TableName(tok)))
+        val tos = TableOrSubqueryParser().parse(t)
+        if (tos == null)
+            return null
+
+        val tosl = FromTableOrSubqueryList()
+        tosl.tableOrSubqueryList.add(tos)
+        while (SymParser(SQLTokens.SYM_COMMA).parse(t))
+            tosl.tableOrSubqueryList.add(TableOrSubqueryParser().parseExpected(t))
+
+        return tosl;
     }
 
     private fun parseFromJoinClause(t: SQLTokenizer) : IFrom?
     {
-        // TODO: implement this
-        return null
+        val pos = t.getPosition()
+        val tos = TableOrSubqueryParser().parse(t)
+        if (tos == null)
+            return null
+
+        val joinOp = JoinOperatorParser().parse(t);
+        if (joinOp == null)
+        {
+            t.restorePosition(pos)
+            return null
+        }
+
+        val joinTableOrSubquery = TableOrSubqueryParser().parseExpected(t)
+        val joinConstraint = ExpressionParser().parseExpected(t)
+
+        return FromJoinClause(tos, joinOp, joinTableOrSubquery, joinConstraint)
     }
 }
 

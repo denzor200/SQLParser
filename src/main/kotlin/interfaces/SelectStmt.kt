@@ -3,6 +3,8 @@ package interfaces
 import kotlinx.serialization.Serializable
 import BaseParser
 import SQLTokenizer
+import KeywordParser
+import SymParser
 
 @Serializable
 sealed class ISelectStmt {
@@ -32,43 +34,13 @@ class SelectStmtParser : BaseParser<ISelectStmt>()
         return stmt
     }
 
-
-    // TODO: вынести BEGIN
-    private fun parseKeyword(kw: String, t: SQLTokenizer): Boolean
-    {
-        val pos = t.getPosition()
-        if (t.hasMoreTokens() && t.nextToken() == kw)
-            return true
-        t.restorePosition(pos)
-        return false
-    }
-
-    private fun parseSym(sym: Char, t: SQLTokenizer): Boolean
-    {
-        val pos = t.getPosition()
-        if (t.hasMoreTokens() && t.nextToken() == sym.toString())
-            return true
-        t.restorePosition(pos)
-        return false
-    }
-
-    private fun parseExpectedKeyword(kw: String, t: SQLTokenizer)
-    {
-        if (!parseKeyword(kw, t))
-        {
-            // TODO: throw expectation failure
-        }
-    }
-    // TODO: вынести END
-
-
     private fun parseColumns(stmt: SelectStmt, t: SQLTokenizer): Boolean
     {
-        if (!parseKeyword("SELECT", t))
+        if (!KeywordParser(SQLTokens.SELECT).parse(t))
             return false
         stmt.columns.add(ColumnParser().parseExpected(t))
 
-        while (parseSym(',', t))
+        while (SymParser(SQLTokens.SYM_COMMA).parse(t))
             stmt.columns.add(ColumnParser().parseExpected(t))
 
         return true
@@ -76,32 +48,69 @@ class SelectStmtParser : BaseParser<ISelectStmt>()
 
     private fun parseFrom(stmt: SelectStmt, t: SQLTokenizer)
     {
-        if (!parseKeyword("FROM", t))
+        if (!KeywordParser(SQLTokens.FROM).parse(t))
             return
         stmt.from = FromParser().parseExpected(t)
     }
 
     private fun parseWhereClause(stmt: SelectStmt, t: SQLTokenizer)
     {
-        // TODO: implement this
+        if (!KeywordParser(SQLTokens.WHERE).parse(t))
+            return
+        stmt.whereClause = ExpressionParser().parseExpected(t)
     }
 
     private fun parseGroupByColumns(stmt: SelectStmt, t: SQLTokenizer)
     {
-        // TODO: implement this
-        // TODO: parse having
+        if (!KeywordParser(SQLTokens.GROUP).parse(t))
+            return
+
+        KeywordParser(SQLTokens.BY).parseExpected(t)
+        stmt.groupByColumns.add(ExpressionParser().parseExpected(t))
+
+        while (SymParser(SQLTokens.SYM_COMMA).parse(t))
+            stmt.groupByColumns.add(ExpressionParser().parseExpected(t))
+
+        parseHaving(stmt, t)
+    }
+
+    private fun parseHaving(stmt: SelectStmt, t: SQLTokenizer)
+    {
+        if (!KeywordParser(SQLTokens.HAVING).parse(t))
+            return
+
+        stmt.having = ExpressionParser().parseExpected(t)
     }
 
     private fun parseSortColumns(stmt: SelectStmt, t: SQLTokenizer)
     {
-        // TODO: implement this
+        if (!KeywordParser(SQLTokens.ORDER).parse(t))
+            return
+
+        KeywordParser(SQLTokens.BY).parseExpected(t)
+        stmt.sortColumns.add(ExpressionParser().parseExpected(t))
+
+        while (SymParser(SQLTokens.SYM_COMMA).parse(t))
+            stmt.sortColumns.add(ExpressionParser().parseExpected(t))
     }
 
     private fun parseLimit(stmt: SelectStmt, t: SQLTokenizer)
     {
-        // TODO: implement this
-        // TODO: parse offset
+        if (!KeywordParser(SQLTokens.LIMIT).parse(t))
+            return
+
+        stmt.limit = ExpressionParser().parseExpected(t)
+        parseOffset(stmt, t)
     }
+
+    private fun parseOffset(stmt: SelectStmt, t: SQLTokenizer)
+    {
+        if (!KeywordParser(SQLTokens.OFFSET).parse(t))
+            return
+
+        stmt.offset = ExpressionParser().parseExpected(t)
+    }
+
 }
 
 

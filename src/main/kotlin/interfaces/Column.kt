@@ -9,8 +9,7 @@ import BaseParser
 @Serializable sealed class IColumn {
 }
 
-// TODO: add optional column alias
-@Serializable data class Column(val expr: IExpression, val alias: String? = null) : IColumn()
+@Serializable data class Column(var expr: IExpression, var alias: String? = null) : IColumn()
 @Serializable class ColumnStar() : IColumn()
 
 
@@ -37,7 +36,7 @@ class ColumnParser : BaseParser<IColumn>()
     private fun parseColumnStar(t: SQLTokenizer): IColumn?
     {
         val tok = t.nextToken()
-        if (tok == "*")
+        if (tok == SQLTokens.SYM_STAR.toString())
             return ColumnStar()
         return null
     }
