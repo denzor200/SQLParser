@@ -5,6 +5,7 @@ import BaseParser
 import SQLTokenizer
 import SymParser
 import KeywordParser
+import IdentifierParser
 import java.security.Key
 
 @Serializable
@@ -39,11 +40,11 @@ class TableOrSubqueryParser : BaseParser<ITableOrSubquery>()
 
     private fun parseSubquery(t: SQLTokenizer): ITableOrSubquery?
     {
-        if (!SymParser(SQLTokens.SYM_BRACE_OPEN).parse(t))
+        if (!SymParser(SQLTokens.Symbolized.SYM_BRACE_OPEN).parse(t))
             return null
 
         val sq = Subquery(SelectStmtParser().parseExpected(t))
-        SymParser(SQLTokens.SYM_BRACE_CLOSE).parseExpected(t)
+        SymParser(SQLTokens.Symbolized.SYM_BRACE_CLOSE).parseExpected(t)
 
         sq.alias = parseOptionalAlias(t)
 
@@ -64,11 +65,12 @@ class TableOrSubqueryParser : BaseParser<ITableOrSubquery>()
 
     private fun parseOptionalAlias(t: SQLTokenizer): String?
     {
-        if (!KeywordParser(SQLTokens.AS).parse(t))
-            return null
+        if (KeywordParser(SQLTokens.Keywords.AS).parse(t))
+        {
+            return IdentifierParser().parseExpected(t)
+        }
 
-        // TODO: проверить что токен существует и что он ожидаем
-        return t.nextToken()
+        return IdentifierParser().parse(t)
     }
 }
 

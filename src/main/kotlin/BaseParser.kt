@@ -49,3 +49,28 @@ class SymParser(val sym: Char) : BaseParserVoid()
         return false
     }
 }
+
+class IdentifierParser : BaseParser<String>()
+{
+    override fun parse(t: SQLTokenizer): String?
+    {
+        val pos = t.getPosition()
+        if (t.hasMoreTokens() && SQLTokens.isIdentifier(t.nextToken()))
+            return t.lastToken()
+        t.restorePosition(pos)
+        return null
+    }
+}
+
+class IntegerLiteralParser : BaseParser<String>()
+{
+    override fun parse(t: SQLTokenizer): String?
+    {
+        val pos = t.getPosition()
+        if (t.hasMoreTokens() && SQLTokens.isIntegerLiteral(t.nextToken()))
+            return t.lastToken()
+        t.restorePosition(pos)
+        return null
+    }
+}
+

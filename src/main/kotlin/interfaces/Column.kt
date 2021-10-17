@@ -5,6 +5,8 @@ package interfaces
 import kotlinx.serialization.Serializable
 import SQLTokenizer
 import BaseParser
+import KeywordParser
+import IdentifierParser
 
 @Serializable sealed class IColumn {
 }
@@ -36,7 +38,7 @@ class ColumnParser : BaseParser<IColumn>()
     private fun parseColumnStar(t: SQLTokenizer): IColumn?
     {
         val tok = t.nextToken()
-        if (tok == SQLTokens.SYM_STAR.toString())
+        if (tok == SQLTokens.Symbolized.SYM_STAR.toString())
             return ColumnStar()
         return null
     }
@@ -45,8 +47,23 @@ class ColumnParser : BaseParser<IColumn>()
     {
         val expr = ExpressionParser().parse(t)
         if (expr != null)
-            return Column(expr)
+        {
+            var c = Column(expr)
+            c.alias = parseOptionalAlias(t)
+            return c
+        }
         return null
+    }
+
+
+    private fun parseOptionalAlias(t: SQLTokenizer): String?
+    {
+        if (KeywordParser(SQLTokens.Keywords.AS).parse(t))
+        {
+            return IdentifierParser().parseExpected(t)
+        }
+
+        return IdentifierParser().parse(t)
     }
 }
 

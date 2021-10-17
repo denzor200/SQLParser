@@ -45,7 +45,7 @@ class FromParser : BaseParser<IFrom>()
 
         val tosl = FromTableOrSubqueryList()
         tosl.tableOrSubqueryList.add(tos)
-        while (SymParser(SQLTokens.SYM_COMMA).parse(t))
+        while (SymParser(SQLTokens.Symbolized.SYM_COMMA).parse(t))
             tosl.tableOrSubqueryList.add(TableOrSubqueryParser().parseExpected(t))
 
         return tosl;
@@ -66,7 +66,7 @@ class FromParser : BaseParser<IFrom>()
         }
 
         val joinTableOrSubquery = TableOrSubqueryParser().parseExpected(t)
-        val joinConstraint = ExpressionParser().parseExpected(t)
+        val joinConstraint = JoinConstraintParser().parseExpected(t)
 
         return FromJoinClause(tos, joinOp, joinTableOrSubquery, joinConstraint)
     }

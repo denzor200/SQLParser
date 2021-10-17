@@ -9,6 +9,11 @@ import kotlinx.serialization.json.encodeToJsonElement
 
 data class TestCase(val expected: String, val query: String)
 
+fun ExpressionBinary(left: IExpression, tok: String, right: IExpression): IExpression
+{
+    return ExpressionProgram(left, mutableListOf(ExpressionOperation(tok, right)))
+}
+
 class Test
 {
     @Test fun example()
@@ -166,32 +171,44 @@ class Test
                          ]
                       },
                       "whereClause":{
-                         "type":"interfaces.ExpressionBinary",
-                         "left":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
+                         "type":"interfaces.ExpressionProgram",
+                         "first":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
                                "type":"interfaces.ExpressionIdentifier",
                                "value":"id"
                             },
-                            "tok":">",
-                            "right":{
-                               "type":"interfaces.ExpressionIntegralLiteral",
-                               "value":1
-                            }
+                            "rest":[
+                               {
+                                  "tok":">",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIntegralLiteral",
+                                     "value":1
+                                  }
+                               }
+                            ]
                          },
-                         "tok":"AND",
-                         "right":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
-                               "type":"interfaces.ExpressionIdentifier",
-                               "value":"id"
-                            },
-                            "tok":"<=",
-                            "right":{
-                               "type":"interfaces.ExpressionIntegralLiteral",
-                               "value":5
+                         "rest":[
+                            {
+                               "tok":"AND",
+                               "operand":{
+                                  "type":"interfaces.ExpressionProgram",
+                                  "first":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"id"
+                                  },
+                                  "rest":[
+                                     {
+                                        "tok":"<=",
+                                        "operand":{
+                                           "type":"interfaces.ExpressionIntegralLiteral",
+                                           "value":5
+                                        }
+                                     }
+                                  ]
+                               }
                             }
-                         }
+                         ]
                       }
                    }
                 }
@@ -330,16 +347,20 @@ class Test
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
                                "type":"interfaces.ExpressionIdentifier",
                                "value":"users.id"
                             },
-                            "tok":"==",
-                            "right":{
-                               "type":"interfaces.ExpressionIdentifier",
-                               "value":"objects.id"
-                            }
+                            "rest":[
+                               {
+                                  "tok":"==",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"objects.id"
+                                  }
+                               }
+                            ]
                          }
                       }
                    }
@@ -367,16 +388,20 @@ class Test
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
                                "type":"interfaces.ExpressionIdentifier",
                                "value":"users.id"
                             },
-                            "tok":"==",
-                            "right":{
-                               "type":"interfaces.ExpressionIdentifier",
-                               "value":"objects.id"
-                            }
+                            "rest":[
+                               {
+                                  "tok":"==",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"objects.id"
+                                  }
+                               }
+                            ]
                          }
                       }
                    }
@@ -404,16 +429,20 @@ class Test
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
                                "type":"interfaces.ExpressionIdentifier",
                                "value":"users.id"
                             },
-                            "tok":"==",
-                            "right":{
-                               "type":"interfaces.ExpressionIdentifier",
-                               "value":"objects.id"
-                            }
+                            "rest":[
+                               {
+                                  "tok":"==",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"objects.id"
+                                  }
+                               }
+                            ]
                          }
                       }
                    }
@@ -441,16 +470,20 @@ class Test
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionBinary",
-                            "left":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
                                "type":"interfaces.ExpressionIdentifier",
                                "value":"users.id"
                             },
-                            "tok":"==",
-                            "right":{
-                               "type":"interfaces.ExpressionIdentifier",
-                               "value":"objects.id"
-                            }
+                            "rest":[
+                               {
+                                  "tok":"==",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"objects.id"
+                                  }
+                               }
+                            ]
                          }
                       }
                    }
@@ -459,113 +492,129 @@ class Test
 
 
             TestCase("""
-            {
-               "stmt":{
-                  "columns":[
-                     {
-                        "type":"interfaces.Column",
-                        "expr":{
-                           "type":"interfaces.ExpressionIdentifier",
-                           "value":"author.name"
-                        }
-                     },
-                     {
-                        "type":"interfaces.Column",
-                        "expr":{
-                           "type":"interfaces.ExpressionFunctionCall",
-                           "value":"count",
-                           "args":[
-                              {
-                                 "type":"interfaces.ExpressionIdentifier",
-                                 "value":"book.id"
-                              }
-                           ]
-                        }
-                     },
-                     {
-                        "type":"interfaces.Column",
-                        "expr":{
-                           "type":"interfaces.ExpressionFunctionCall",
-                           "value":"sum",
-                           "args":[
-                              {
-                                 "type":"interfaces.ExpressionIdentifier",
-                                 "value":"book.cost"
-                              }
-                           ]
-                        }
-                     }
-                  ],
-                  "from":{
-                     "type":"interfaces.FromJoinClause",
-                     "tableOrSubquery":{
-                        "type":"interfaces.TableName",
-                        "tableName":"author"
-                     },
-                     "joinOp":"LEFT",
-                     "joinTableOrSubquery":{
-                        "type":"interfaces.TableName",
-                        "tableName":"book"
-                     },
-                     "joinConstraint":{
-                        "type":"interfaces.ExpressionBinary",
-                        "left":{
-                           "type":"interfaces.ExpressionIdentifier",
-                           "value":"author.id"
-                        },
-                        "tok":"=",
-                        "right":{
-                           "type":"interfaces.ExpressionIdentifier",
-                           "value":"book.author_id"
-                        }
-                     }
-                  },
-                  "groupByColumns":[
-                     {
-                        "type":"interfaces.ExpressionIdentifier",
-                        "value":"author.name"
-                     }
-                  ],
-                  "having":{
-                     "type":"interfaces.ExpressionBinary",
-                     "left":{
-                        "type":"interfaces.ExpressionBinary",
-                        "left":{
-                           "type":"interfaces.ExpressionFunctionCallStar",
-                           "value":"COUNT"
-                        },
-                        "tok":">",
-                        "right":{
-                           "type":"interfaces.ExpressionIntegralLiteral",
-                           "value":1
-                        }
-                     },
-                     "tok":"AND",
-                     "right":{
-                        "type":"interfaces.ExpressionBinary",
-                        "left":{
-                           "type":"interfaces.ExpressionFunctionCall",
-                           "value":"SUM",
-                           "args":[
-                              {
-                                 "type":"interfaces.ExpressionIdentifier",
-                                 "value":"book.cost"
-                              }
-                           ]
-                        },
-                        "tok":">",
-                        "right":{
-                           "type":"interfaces.ExpressionIntegralLiteral",
-                           "value":500
-                        }
-                     }
-                  },
-                  "limit":{
-                     "type":"interfaces.ExpressionIntegralLiteral",
-                     "value":10
-                  }
-               }
-            }
+                {
+                   "stmt":{
+                      "columns":[
+                         {
+                            "type":"interfaces.Column",
+                            "expr":{
+                               "type":"interfaces.ExpressionIdentifier",
+                               "value":"author.name"
+                            }
+                         },
+                         {
+                            "type":"interfaces.Column",
+                            "expr":{
+                               "type":"interfaces.ExpressionFunctionCall",
+                               "value":"count",
+                               "args":[
+                                  {
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"book.id"
+                                  }
+                               ]
+                            }
+                         },
+                         {
+                            "type":"interfaces.Column",
+                            "expr":{
+                               "type":"interfaces.ExpressionFunctionCall",
+                               "value":"sum",
+                               "args":[
+                                  {
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"book.cost"
+                                  }
+                               ]
+                            }
+                         }
+                      ],
+                      "from":{
+                         "type":"interfaces.FromJoinClause",
+                         "tableOrSubquery":{
+                            "type":"interfaces.TableName",
+                            "tableName":"author"
+                         },
+                         "joinOp":"LEFT",
+                         "joinTableOrSubquery":{
+                            "type":"interfaces.TableName",
+                            "tableName":"book"
+                         },
+                         "joinConstraint":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
+                               "type":"interfaces.ExpressionIdentifier",
+                               "value":"author.id"
+                            },
+                            "rest":[
+                               {
+                                  "tok":"=",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIdentifier",
+                                     "value":"book.author_id"
+                                  }
+                               }
+                            ]
+                         }
+                      },
+                      "groupByColumns":[
+                         {
+                            "type":"interfaces.ExpressionIdentifier",
+                            "value":"author.name"
+                         }
+                      ],
+                      "having":{
+                         "type":"interfaces.ExpressionProgram",
+                         "first":{
+                            "type":"interfaces.ExpressionProgram",
+                            "first":{
+                               "type":"interfaces.ExpressionFunctionCallStar",
+                               "value":"COUNT"
+                            },
+                            "rest":[
+                               {
+                                  "tok":">",
+                                  "operand":{
+                                     "type":"interfaces.ExpressionIntegralLiteral",
+                                     "value":1
+                                  }
+                               }
+                            ]
+                         },
+                         "rest":[
+                            {
+                               "tok":"AND",
+                               "operand":{
+                                  "type":"interfaces.ExpressionProgram",
+                                  "first":{
+                                     "type":"interfaces.ExpressionFunctionCall",
+                                     "value":"SUM",
+                                     "args":[
+                                        {
+                                           "type":"interfaces.ExpressionIdentifier",
+                                           "value":"book.cost"
+                                        }
+                                     ]
+                                  },
+                                  "rest":[
+                                     {
+                                        "tok":">",
+                                        "operand":{
+                                           "type":"interfaces.ExpressionIntegralLiteral",
+                                           "value":500
+                                        }
+                                     }
+                                  ]
+                               }
+                            }
+                         ]
+                      },
+                      "limit":{
+                         "type":"interfaces.ExpressionIntegralLiteral",
+                         "value":10
+                      }
+                   }
+                }
             """,
             """
                 SELECT author.name, count(book.id), sum(book.cost) 
@@ -575,6 +624,12 @@ class Test
                 LIMIT 10;
             """)
         )
+//
+
+
+//        var q = Query()
+//        q.parse("SELECT marvel.id AS id, marvel.name AS name, marvel.abilities AS abilities FROM marvel;")
+//        println(Json.encodeToJsonElement(q))
 
         for (case in CASES)
         {
