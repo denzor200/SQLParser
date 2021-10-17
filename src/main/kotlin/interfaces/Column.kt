@@ -4,19 +4,19 @@ package interfaces
 
 import kotlinx.serialization.Serializable
 import SQLTokenizer
-import java.beans.Expression
+import BaseParser
 
 @Serializable sealed class IColumn {
 }
 
 // TODO: add optional column alias
-@Serializable data class Column(val expr: IExpression) : IColumn()
+@Serializable data class Column(val expr: IExpression, val alias: String? = null) : IColumn()
 @Serializable class ColumnStar() : IColumn()
 
 
-class ColumnParser
+class ColumnParser : BaseParser<IColumn>()
 {
-    fun parse(t: SQLTokenizer): IColumn?
+    override fun parse(t: SQLTokenizer): IColumn?
     {
         if (t.hasMoreTokens())
         {
@@ -48,16 +48,6 @@ class ColumnParser
         if (expr != null)
             return Column(expr)
         return null
-    }
-
-    fun parseExpected(t: SQLTokenizer): IColumn
-    {
-        val from = parse(t)
-        if (from==null)
-        {
-            // TODO: throw expectation failure
-        }
-        return from!!
     }
 }
 

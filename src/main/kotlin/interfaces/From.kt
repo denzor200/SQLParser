@@ -1,32 +1,39 @@
 package interfaces
 
+import BaseParser
 import kotlinx.serialization.Serializable
 import SQLTokenizer
 
 // TODO: вынести
 @Serializable sealed class ITableOrSubquery {}
 
-// TODO: implement this
-@Serializable class Subquery() : ITableOrSubquery()
+@Serializable data class Subquery(val stmt: ISelectStmt, val alias: String? = null) : ITableOrSubquery()
 
-// TODO: optional scheme name
-// TODO: optional alias
-@Serializable data class TableName(val tableName: String) : ITableOrSubquery()
+@Serializable data class TableName(val tableName: String, val alias: String?=null) : ITableOrSubquery()
+/////////////////////////////////////////////
+
+// TODO: вынести
+@Serializable enum class JoinOperator
+{
+    INNER, LEFT, RIGHT, FULL
+}
 
 
+////////////////////////////////////////////////
 
 @Serializable sealed class IFrom {
 }
 
-// TODO: implement this
-@Serializable class FromJoinClause() : IFrom()
+@Serializable class FromJoinClause(val tableOrSubquery: ITableOrSubquery
+                                 , val joinOp: JoinOperator
+                                 , val joinTableOrSubquery: ITableOrSubquery
+                                 , val joinConstraint: IExpression) : IFrom()
 
 @Serializable data class FromTableOrSubqueryList(val tableOrSubqueryList: List<ITableOrSubquery>) : IFrom()
 
-// TODO: нужен базовый класс парсера
-class FromParser
+class FromParser : BaseParser<IFrom>()
 {
-    fun parse(t: SQLTokenizer): IFrom?
+    override fun parse(t: SQLTokenizer): IFrom?
     {
         if (t.hasMoreTokens())
         {
@@ -59,16 +66,6 @@ class FromParser
     {
         // TODO: implement this
         return null
-    }
-
-    fun parseExpected(t: SQLTokenizer): IFrom
-    {
-        val from = parse(t)
-        if (from==null)
-        {
-            // TODO: throw expectation failure
-        }
-        return from!!
     }
 }
 
