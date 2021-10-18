@@ -1,4 +1,4 @@
-package interfaces
+package ast
 
 import BaseParser
 import kotlinx.serialization.Serializable
@@ -23,7 +23,8 @@ class FromParser : BaseParser<IFrom>()
         {
             val pos = t.getPosition()
 
-            // TODO: определись с порядком парсинга. Здесь он видимо принципиален
+            // Здесь порядок парсинга принципиален - сначала всегда пробуем распарсить JoinClause
+            // Иначе JoinClause будет ошибочно воспринят как TableOrSubqueryList
             val jc = parseFromJoinClause(t)
             if (jc != null)
                 return jc
@@ -39,9 +40,7 @@ class FromParser : BaseParser<IFrom>()
 
     private fun parseFromTableOrSubqueryList(t: SQLTokenizer) : IFrom?
     {
-        val tos = TableOrSubqueryParser().parse(t)
-        if (tos == null)
-            return null
+        val tos = TableOrSubqueryParser().parse(t) ?: return null
 
         val tosl = FromTableOrSubqueryList()
         tosl.tableOrSubqueryList.add(tos)
@@ -54,9 +53,7 @@ class FromParser : BaseParser<IFrom>()
     private fun parseFromJoinClause(t: SQLTokenizer) : IFrom?
     {
         val pos = t.getPosition()
-        val tos = TableOrSubqueryParser().parse(t)
-        if (tos == null)
-            return null
+        val tos = TableOrSubqueryParser().parse(t) ?: return null
 
         val joinOp = JoinOperatorParser().parse(t);
         if (joinOp == null)

@@ -1,9 +1,7 @@
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.Serializable
-import interfaces.*
+import ast.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.encodeToJsonElement
 
@@ -24,14 +22,14 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"book"
                             }
                          ]
@@ -45,26 +43,26 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.Subquery",
+                               "type":"ast.Subquery",
                                "stmt":{
-                                  "type":"interfaces.SelectStmt",
+                                  "type":"ast.SelectStmt",
                                   "columns":[
                                      {
-                                        "type":"interfaces.ColumnStar"
+                                        "type":"ast.ColumnStar"
                                      }
                                   ],
                                   "from":{
-                                     "type":"interfaces.FromTableOrSubqueryList",
+                                     "type":"ast.FromTableOrSubqueryList",
                                      "tableOrSubqueryList":[
                                         {
-                                           "type":"interfaces.TableName",
+                                           "type":"ast.TableName",
                                            "tableName":"A"
                                         }
                                      ]
@@ -85,22 +83,22 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"a"
                             },
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"b"
                             },
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"c"
                             }
                          ]
@@ -115,35 +113,35 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"marvel.id"
                             },
                             "alias":"id"
                          },
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"marvel.name"
                             },
                             "alias":"name"
                          },
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"marvel.abilities"
                             },
                             "alias":"abilities"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
@@ -158,31 +156,31 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
                       },
                       "whereClause":{
-                         "type":"interfaces.ExpressionProgram",
+                         "type":"ast.ExpressionProgram",
                          "first":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"id"
                             },
                             "rest":[
                                {
                                   "tok":">",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIntegralLiteral",
+                                     "type":"ast.ExpressionIntegralLiteral",
                                      "value":1
                                   }
                                }
@@ -192,16 +190,16 @@ class Test
                             {
                                "tok":"AND",
                                "operand":{
-                                  "type":"interfaces.ExpressionProgram",
+                                  "type":"ast.ExpressionProgram",
                                   "first":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"id"
                                   },
                                   "rest":[
                                      {
                                         "tok":"<=",
                                         "operand":{
-                                           "type":"interfaces.ExpressionIntegralLiteral",
+                                           "type":"ast.ExpressionIntegralLiteral",
                                            "value":5
                                         }
                                      }
@@ -220,20 +218,20 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
                       },
                       "limit":{
-                         "type":"interfaces.ExpressionIntegralLiteral",
+                         "type":"ast.ExpressionIntegralLiteral",
                          "value":3
                       }
                    }
@@ -246,24 +244,24 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
                       },
                       "limit":{
-                         "type":"interfaces.ExpressionIntegralLiteral",
+                         "type":"ast.ExpressionIntegralLiteral",
                          "value":3
                       },
                       "offset":{
-                         "type":"interfaces.ExpressionIntegralLiteral",
+                         "type":"ast.ExpressionIntegralLiteral",
                          "value":2
                       }
                    }
@@ -276,21 +274,21 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
                       },
                       "groupByColumns":[
                          {
-                            "type":"interfaces.ExpressionIdentifier",
+                            "type":"ast.ExpressionIdentifier",
                             "value":"name"
                          }
                       ]
@@ -304,21 +302,21 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromTableOrSubqueryList",
+                         "type":"ast.FromTableOrSubqueryList",
                          "tableOrSubqueryList":[
                             {
-                               "type":"interfaces.TableName",
+                               "type":"ast.TableName",
                                "tableName":"marvel"
                             }
                          ]
                       },
                       "sortColumns":[
                          {
-                            "type":"interfaces.ExpressionIdentifier",
+                            "type":"ast.ExpressionIdentifier",
                             "value":"name"
                          }
                       ]
@@ -332,31 +330,31 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromJoinClause",
+                         "type":"ast.FromJoinClause",
                          "tableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"objects"
                          },
                          "joinOp":"INNER",
                          "joinTableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"users.id"
                             },
                             "rest":[
                                {
                                   "tok":"==",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"objects.id"
                                   }
                                }
@@ -373,31 +371,31 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromJoinClause",
+                         "type":"ast.FromJoinClause",
                          "tableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"objects"
                          },
                          "joinOp":"LEFT",
                          "joinTableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"users.id"
                             },
                             "rest":[
                                {
                                   "tok":"==",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"objects.id"
                                   }
                                }
@@ -414,31 +412,31 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromJoinClause",
+                         "type":"ast.FromJoinClause",
                          "tableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"objects"
                          },
                          "joinOp":"RIGHT",
                          "joinTableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"users.id"
                             },
                             "rest":[
                                {
                                   "tok":"==",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"objects.id"
                                   }
                                }
@@ -455,31 +453,31 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.ColumnStar"
+                            "type":"ast.ColumnStar"
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromJoinClause",
+                         "type":"ast.FromJoinClause",
                          "tableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"objects"
                          },
                          "joinOp":"FULL",
                          "joinTableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"users"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"users.id"
                             },
                             "rest":[
                                {
                                   "tok":"==",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"objects.id"
                                   }
                                }
@@ -496,33 +494,33 @@ class Test
                    "stmt":{
                       "columns":[
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"author.name"
                             }
                          },
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionFunctionCall",
+                               "type":"ast.ExpressionFunctionCall",
                                "value":"count",
                                "args":[
                                   {
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"book.id"
                                   }
                                ]
                             }
                          },
                          {
-                            "type":"interfaces.Column",
+                            "type":"ast.Column",
                             "expr":{
-                               "type":"interfaces.ExpressionFunctionCall",
+                               "type":"ast.ExpressionFunctionCall",
                                "value":"sum",
                                "args":[
                                   {
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"book.cost"
                                   }
                                ]
@@ -530,27 +528,27 @@ class Test
                          }
                       ],
                       "from":{
-                         "type":"interfaces.FromJoinClause",
+                         "type":"ast.FromJoinClause",
                          "tableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"author"
                          },
                          "joinOp":"LEFT",
                          "joinTableOrSubquery":{
-                            "type":"interfaces.TableName",
+                            "type":"ast.TableName",
                             "tableName":"book"
                          },
                          "joinConstraint":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionIdentifier",
+                               "type":"ast.ExpressionIdentifier",
                                "value":"author.id"
                             },
                             "rest":[
                                {
                                   "tok":"=",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIdentifier",
+                                     "type":"ast.ExpressionIdentifier",
                                      "value":"book.author_id"
                                   }
                                }
@@ -559,23 +557,23 @@ class Test
                       },
                       "groupByColumns":[
                          {
-                            "type":"interfaces.ExpressionIdentifier",
+                            "type":"ast.ExpressionIdentifier",
                             "value":"author.name"
                          }
                       ],
                       "having":{
-                         "type":"interfaces.ExpressionProgram",
+                         "type":"ast.ExpressionProgram",
                          "first":{
-                            "type":"interfaces.ExpressionProgram",
+                            "type":"ast.ExpressionProgram",
                             "first":{
-                               "type":"interfaces.ExpressionFunctionCallStar",
+                               "type":"ast.ExpressionFunctionCallStar",
                                "value":"COUNT"
                             },
                             "rest":[
                                {
                                   "tok":">",
                                   "operand":{
-                                     "type":"interfaces.ExpressionIntegralLiteral",
+                                     "type":"ast.ExpressionIntegralLiteral",
                                      "value":1
                                   }
                                }
@@ -585,13 +583,13 @@ class Test
                             {
                                "tok":"AND",
                                "operand":{
-                                  "type":"interfaces.ExpressionProgram",
+                                  "type":"ast.ExpressionProgram",
                                   "first":{
-                                     "type":"interfaces.ExpressionFunctionCall",
+                                     "type":"ast.ExpressionFunctionCall",
                                      "value":"SUM",
                                      "args":[
                                         {
-                                           "type":"interfaces.ExpressionIdentifier",
+                                           "type":"ast.ExpressionIdentifier",
                                            "value":"book.cost"
                                         }
                                      ]
@@ -600,7 +598,7 @@ class Test
                                      {
                                         "tok":">",
                                         "operand":{
-                                           "type":"interfaces.ExpressionIntegralLiteral",
+                                           "type":"ast.ExpressionIntegralLiteral",
                                            "value":500
                                         }
                                      }
@@ -610,7 +608,7 @@ class Test
                          ]
                       },
                       "limit":{
-                         "type":"interfaces.ExpressionIntegralLiteral",
+                         "type":"ast.ExpressionIntegralLiteral",
                          "value":10
                       }
                    }

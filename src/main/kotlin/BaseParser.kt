@@ -1,16 +1,8 @@
-import interfaces.IFrom
-
 abstract class BaseParser<T> {
     abstract fun parse(t: SQLTokenizer): T?
 
-    fun parseExpected(t: SQLTokenizer): T
-    {
-        val obj = parse(t)
-        if (obj==null)
-        {
-            // TODO: throw expectation failure
-        }
-        return obj!!
+    fun parseExpected(t: SQLTokenizer): T {
+        return parse(t) ?: throw SyntaxError(t.character())
     }
 }
 
@@ -21,7 +13,7 @@ abstract class BaseParserVoid {
     {
         if (!parse(t))
         {
-            // TODO: throw expectation failure
+            throw SyntaxError(t.character())
         }
     }
 }

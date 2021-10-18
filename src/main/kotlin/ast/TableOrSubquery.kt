@@ -1,4 +1,4 @@
-package interfaces
+package ast
 
 import kotlinx.serialization.Serializable
 import BaseParser
@@ -6,7 +6,6 @@ import SQLTokenizer
 import SymParser
 import KeywordParser
 import IdentifierParser
-import java.security.Key
 
 @Serializable
 sealed class ITableOrSubquery {}
@@ -53,10 +52,11 @@ class TableOrSubqueryParser : BaseParser<ITableOrSubquery>()
 
     private fun parseTableName(t: SQLTokenizer): ITableOrSubquery?
     {
-        if (t.hasMoreTokens())
+        //println("parseTableName")
+        val tok = IdentifierParser().parse(t)
+        if (tok != null)
         {
-            // TODO: проверить что токен ожидаем
-            val tb = TableName(t.nextToken())
+            val tb = TableName(tok)
             tb.alias = parseOptionalAlias(t)
             return tb
         }

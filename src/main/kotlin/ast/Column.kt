@@ -1,6 +1,4 @@
-package interfaces
-
-// TODO: rename interfaces package
+package ast
 
 import kotlinx.serialization.Serializable
 import SQLTokenizer

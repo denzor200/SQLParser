@@ -58,7 +58,6 @@ object SQLTokens  {
      */
     fun isSymbol(str: String): Boolean
     {
-        // TODO: вывести список полей один раз чтобы сверить
         for (it in Symbolized.javaClass.declaredFields)
         {
             val kw = it.get(Symbolized).toString()
@@ -77,7 +76,6 @@ object SQLTokens  {
      */
     fun isKeyword(str: String): Boolean
     {
-        // TODO: вывести список полей один раз чтобы сверить
         for (it in Keywords.javaClass.declaredFields)
         {
             val kw = it.get(Keywords).toString()
@@ -174,13 +172,13 @@ class SQLTokenizer(str: String) {
     {
         if (e_pos >= e_str.length)
         {
-            // TODO: throw eof exception
+            throw EoiError()
         }
 
         var output: String = ""
 
-        val isIdent = e_str[e_pos] in SQLAlpha.ALPHA_IDENT
-        val isSymbol = e_str[e_pos] in SQLAlpha.ALPHA_SYM
+        val isIdent = character() in SQLAlpha.ALPHA_IDENT
+        val isSymbol = character() in SQLAlpha.ALPHA_SYM
 
         if (isIdent)
         {
@@ -193,9 +191,9 @@ class SQLTokenizer(str: String) {
                 output = uppOut
 
             // Не допускаем чтобы идентификаторы начинались с цифры
-            if (!SQLTokens.isKeyword(output) || !SQLTokens.isIdentifier(output) || !SQLTokens.isIntegerLiteral(output))
+            if (!SQLTokens.isKeyword(output) && !SQLTokens.isIdentifier(output) && !SQLTokens.isIntegerLiteral(output))
             {
-                // TODO: unexpected token exception
+                throw SyntaxError(output)
             }
         }
         else if (isSymbol)
@@ -216,12 +214,12 @@ class SQLTokenizer(str: String) {
 
             if (!matched)
             {
-                // TODO: throw unexpected symbol exception
+                throw SyntaxError(character())
             }
         }
         else
         {
-            // TODO: throw unexpected symbol exception
+            throw SyntaxError(character())
         }
 
         //println("TOKEN: $output")
@@ -240,15 +238,15 @@ class SQLTokenizer(str: String) {
     }
 
     /**
-     * Получить символ в текущей позиции
+     * Получить символ(в том числе и пробельный символ) в текущей позиции
      * Спецсимвол 0 зарезервирован как EOI
      */
-    private fun character(): Char
+    fun character(): Char
     {
         if (e_pos < e_str.length)
             return e_str[e_pos]
         else
-            return Char(0) // TODO: убедись что в котле это не whitespace
+            return Char(0)
     }
 
     /**

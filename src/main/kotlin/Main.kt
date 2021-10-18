@@ -1,3 +1,6 @@
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.encodeToString
 
 internal object SQLParserKt {
     @JvmStatic
@@ -10,8 +13,16 @@ internal object SQLParserKt {
                 break
             else
             {
-                // TODO: implement this
-                println("Parsed: $line")
+                try {
+                    val format = Json { prettyPrint = true }
+                    var q = Query()
+                    q.parse(line)
+                    println("Parsed: " + format.encodeToString(Json.encodeToJsonElement(q)))
+                }
+                catch (e: QueryError)
+                {
+                    println("Error: " + e.message)
+                }
             }
         }
     }
